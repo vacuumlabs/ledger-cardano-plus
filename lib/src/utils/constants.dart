@@ -5,7 +5,12 @@ const int claCardano = 0xD7;
 const int maxChunkSize = 240;
 
 const int maxVotecastChunkSize = 240;
+const int maxV8VotecastChunkSize = 250;
 const int votecastHashLength = 32;
+
+const int p1V8CVoteInit    = 0x50;
+const int p1V8CVoteChunk   = 0x51;
+const int p1V8CVoteConfirm = 0x52;
 
 const int signTxIncludedNo = 1;
 const int signTxIncludedYes = 2;
