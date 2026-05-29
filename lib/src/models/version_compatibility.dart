@@ -44,7 +44,7 @@ sealed class VersionCompatibility with _$VersionCompatibility {
     final int major = version.versionMajor;
     final int minor = version.versionMinor;
 
-    bool isVersionInRange(int minMajor, int minMinor, [int maxMajor = 7]) {
+    bool isVersionInRange(int minMajor, int minMinor, [int maxMajor = 8]) {
       return (major > minMajor || (major == minMajor && minor >= minMinor)) && major <= maxMajor;
     }
 
