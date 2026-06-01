@@ -30,6 +30,9 @@ sealed class LedgerCardanoResponseCodeException implements Exception {
     required this.message,
   });
 
+  @override
+  String toString() => '$message (status: 0x${statusCode.toRadixString(16).toUpperCase()})';
+
   static LedgerCardanoResponseCodeException fromLedgerStatusCode(int statusCode) => switch (statusCode) {
     // ── v7 codes — 0x6EXX ────────────────────────────────────────────────────
     0x6E00 || 0x6E01 || 0x6A80 || 0x6A81 || 0x6A15 || 0x6511 => WrongAppOpenedException(ledgerStatusCode: statusCode),
