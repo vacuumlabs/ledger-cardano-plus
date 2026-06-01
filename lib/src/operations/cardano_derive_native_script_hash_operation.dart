@@ -41,11 +41,11 @@ class CardanoDeriveNativeScriptHashOperation extends LedgerComplexOperation<Stri
       prependDataLength: true,
       debugName: "Derive Native Script Hash — Init",
     ));
-    await _deriveNativeScriptHashAddScript(send, script, isV8: true);
+    await _deriveNativeScriptHashAddScript(send, script);
     return _deriveNativeScriptHashFinishWholeNativeScript(send, displayFormat);
   }
 
-  Future<void> _deriveNativeScriptHashAddScript(LedgerSendFct send, ParsedNativeScript script, {bool isV8 = false}) async {
+  Future<void> _deriveNativeScriptHashAddScript(LedgerSendFct send, ParsedNativeScript script) async {
     final sendOperation = switch (script) {
       ParsedNativeScript_Complex() => LedgerSimpleOperation(
         cla: claCardano,
@@ -61,7 +61,7 @@ class CardanoDeriveNativeScriptHashOperation extends LedgerComplexOperation<Stri
         ins: InstructionType.deriveNativeScriptHash.insValue,
         p1: p1DisplayOnDevice,
         p2: p2Unused,
-        data: serializeSimpleNativeScript(script.script, isV8: isV8),
+        data: serializeSimpleNativeScript(script.script),
         prependDataLength: true,
         debugName: "Add Simple Native Script",
       ),
@@ -71,7 +71,7 @@ class CardanoDeriveNativeScriptHashOperation extends LedgerComplexOperation<Stri
 
     if (script is ParsedNativeScript_Complex) {
       for (final subscript in script.script.scripts) {
-        await _deriveNativeScriptHashAddScript(send, subscript, isV8: isV8);
+        await _deriveNativeScriptHashAddScript(send, subscript);
       }
     }
   }
@@ -115,7 +115,8 @@ class CardanoDeriveNativeScriptHashOperation extends LedgerComplexOperation<Stri
     return writer.toBytes();
   });
 
-  Uint8List serializeSimpleNativeScript(ParsedSimpleNativeScript script, {bool isV8 = false}) => useBinaryWriter((writer) {
+  Uint8List serializeSimpleNativeScript(ParsedSimpleNativeScript script) => useBinaryWriter((writer) {
+    final isV8 = version.versionMajor >= 8;
     final void Function() invoker = switch (script) {
       ParsedSimpleNativeScript_PubKeyDeviceOwned() => () {
         writer.writeUint8(script.nativeScriptSerializationValue);

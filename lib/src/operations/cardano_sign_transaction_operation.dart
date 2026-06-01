@@ -991,6 +991,12 @@ class CardanoSignTransactionOperation extends LedgerComplexOperation<SignedTrans
       network: network,
     );
 
+    if (rawTxBody.length > 0xFFFF) {
+      throw LedgerCardanoValidationException(
+        "Transaction body too large for v8 protocol: ${rawTxBody.length} bytes (max 65535)",
+      );
+    }
+
     await send(
       LedgerSimpleOperation(
         cla: claCardano,

@@ -76,7 +76,7 @@ void main() {
               testCase.script(),
               NativeScriptHashDisplayFormat.bech32,
             ),
-            throwsA(isA<LedgerCardanoResponseCodeException>()),
+            throwsA(isA<InvalidNativeScriptException>()),
           );
         });
       }

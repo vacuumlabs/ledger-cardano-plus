@@ -7,7 +7,7 @@ sealed class LedgerCardanoResponseCodeException implements Exception {
     StillInCallException() => 0x6E04,
     InvalidRequestParametersException() => 0x6E05,
     InvalidStateException() => 0x6E06,
-    InvalidDataException() => 0x6E07,
+    InvalidDataException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     InvalidBip44PathException() => 0x6E08,
     UserRejectedException() => 0x6E09,
     PolicyRejectedException() => 0x6E10,
@@ -20,6 +20,7 @@ sealed class LedgerCardanoResponseCodeException implements Exception {
     InvalidNativeScriptException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     InvalidCVoteException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     InvalidMessageSigningException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
+    InvalidOpCertException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     // ─────────────────────────────────────────────────────────────────────────
     UnknownResponseCodeException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
   };
@@ -53,7 +54,7 @@ sealed class LedgerCardanoResponseCodeException implements Exception {
     0x6980 => InvalidStateException(),
     0x6D00 => UnknownInstructionException(),
     0x6A86 => InvalidRequestParametersException(),
-    0x6A87 => InvalidDataException(),
+    0x6A87 => InvalidDataException(ledgerStatusCode: 0x6A87),
     0x6A84 => InsufficientMemoryException(),
 
     // ── v8 Cardano-specific codes — 0x6BXX ───────────────────────────────────
@@ -62,8 +63,12 @@ sealed class LedgerCardanoResponseCodeException implements Exception {
     0x6B05 => InvalidBip44PathException(),
     0x6B06 => InvalidAddressParamsException(),
 
-    // OpCert (same semantics as generic data errors)
-    0x6B10 || 0x6B11 || 0x6B12 || 0x6B13 || 0x6B14 => InvalidDataException(),
+    // OpCert
+    0x6B10 => InvalidOpCertException(ledgerStatusCode: 0x6B10, detail: "KES public key parse failure"),
+    0x6B11 => InvalidOpCertException(ledgerStatusCode: 0x6B11, detail: "KES period parse failure"),
+    0x6B12 => InvalidOpCertException(ledgerStatusCode: 0x6B12, detail: "issue counter parse failure"),
+    0x6B13 => InvalidOpCertException(ledgerStatusCode: 0x6B13, detail: "pool cold key path parse failure"),
+    0x6B14 => InvalidOpCertException(ledgerStatusCode: 0x6B14, detail: "op-cert byte count out of range"),
 
     // Transaction
     0x6B00 => InvalidTxException(ledgerStatusCode: 0x6B00, detail: "invalid length"),
@@ -159,7 +164,8 @@ class InvalidStateException extends LedgerCardanoResponseCodeException {
 }
 
 class InvalidDataException extends LedgerCardanoResponseCodeException {
-  InvalidDataException() : super(message: "Invalid data");
+  final int ledgerStatusCode;
+  InvalidDataException({this.ledgerStatusCode = 0x6E07}) : super(message: "Invalid data");
 }
 
 class InvalidBip44PathException extends LedgerCardanoResponseCodeException {
@@ -214,6 +220,12 @@ class InvalidMessageSigningException extends LedgerCardanoResponseCodeException 
   final int ledgerStatusCode;
   InvalidMessageSigningException({required this.ledgerStatusCode, required String detail})
       : super(message: "Invalid message signing data: $detail");
+}
+
+class InvalidOpCertException extends LedgerCardanoResponseCodeException {
+  final int ledgerStatusCode;
+  InvalidOpCertException({required this.ledgerStatusCode, required String detail})
+      : super(message: "Invalid operational certificate: $detail");
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
