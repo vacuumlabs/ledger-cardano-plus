@@ -404,6 +404,27 @@ class SerializationUtils {
           writer.writeUint8(certificate.certificateTypeSerializationValue);
           writer.write(serializeCredentialV8(certificate.dRepCredential));
           writer.write(serializeAnchorV8(certificate.anchor));
+        case StakePoolAndDRepDelegation():
+          writer.writeUint8(certificate.certificateTypeSerializationValue);
+          writer.write(serializeCredentialV8(certificate.stakeCredential));
+          writeSerializedHex(writer, certificate.poolKeyHashHex);
+          writer.write(serializeDRep(certificate.dRep));
+        case AccountRegistrationDelegationToStakePool():
+          writer.writeUint8(certificate.certificateTypeSerializationValue);
+          writer.write(serializeCredentialV8(certificate.stakeCredential));
+          writeSerializedHex(writer, certificate.poolKeyHashHex);
+          writeSerializedCoin(writer, certificate.deposit);
+        case AccountRegistrationDelegationToDRep():
+          writer.writeUint8(certificate.certificateTypeSerializationValue);
+          writer.write(serializeCredentialV8(certificate.stakeCredential));
+          writer.write(serializeDRep(certificate.dRep));
+          writeSerializedCoin(writer, certificate.deposit);
+        case AccountRegistrationDelegationToStakePoolAndDRep():
+          writer.writeUint8(certificate.certificateTypeSerializationValue);
+          writer.write(serializeCredentialV8(certificate.stakeCredential));
+          writeSerializedHex(writer, certificate.poolKeyHashHex);
+          writer.write(serializeDRep(certificate.dRep));
+          writeSerializedCoin(writer, certificate.deposit);
         case StakePoolRegistration():
           writer.writeUint8(certificate.certificateTypeSerializationValue);
           final poolBytes = _serializeV8PoolRegistration(certificate.pool);
@@ -897,6 +918,18 @@ class SerializationUtils {
           writer.write(serializeCredential(certificate.dRepCredential));
           writer.write(serializeAnchor(certificate.anchor));
         },
+        StakePoolAndDRepDelegation() => () => throw LedgerCardanoValidationException(
+          "Combined delegation certificates require app version >=8.0.0",
+        ),
+        AccountRegistrationDelegationToStakePool() => () => throw LedgerCardanoValidationException(
+          "Combined delegation certificates require app version >=8.0.0",
+        ),
+        AccountRegistrationDelegationToDRep() => () => throw LedgerCardanoValidationException(
+          "Combined delegation certificates require app version >=8.0.0",
+        ),
+        AccountRegistrationDelegationToStakePoolAndDRep() => () => throw LedgerCardanoValidationException(
+          "Combined delegation certificates require app version >=8.0.0",
+        ),
         StakePoolRegistration() => () {
           writer.writeUint8(certificate.certificateTypeSerializationValue);
         },
@@ -1043,6 +1076,18 @@ class SerializationUtils {
           "Conway certificates in pre-multisig serialization",
         ),
         DRepUpdate() => throw LedgerCardanoValidationException(
+          "Conway certificates in pre-multisig serialization",
+        ),
+        StakePoolAndDRepDelegation() => throw LedgerCardanoValidationException(
+          "Conway certificates in pre-multisig serialization",
+        ),
+        AccountRegistrationDelegationToStakePool() => throw LedgerCardanoValidationException(
+          "Conway certificates in pre-multisig serialization",
+        ),
+        AccountRegistrationDelegationToDRep() => throw LedgerCardanoValidationException(
+          "Conway certificates in pre-multisig serialization",
+        ),
+        AccountRegistrationDelegationToStakePoolAndDRep() => throw LedgerCardanoValidationException(
           "Conway certificates in pre-multisig serialization",
         ),
       };
@@ -1523,6 +1568,38 @@ List<LedgerSigningPath> gatherWitnessPaths(ParsedSigningRequest request) {
           },
           StakePoolRetirement() => () => witnessPaths.add(cert.path),
           StakeRegistration() => () {},
+          StakePoolAndDRepDelegation() => () {
+            final credential = cert.stakeCredential;
+            final void Function() invoker = switch (credential) {
+              CredentialKeyPath() => () => witnessPaths.add(credential.path),
+              _ => () => (),
+            };
+            invoker();
+          },
+          AccountRegistrationDelegationToStakePool() => () {
+            final credential = cert.stakeCredential;
+            final void Function() invoker = switch (credential) {
+              CredentialKeyPath() => () => witnessPaths.add(credential.path),
+              _ => () => (),
+            };
+            invoker();
+          },
+          AccountRegistrationDelegationToDRep() => () {
+            final credential = cert.stakeCredential;
+            final void Function() invoker = switch (credential) {
+              CredentialKeyPath() => () => witnessPaths.add(credential.path),
+              _ => () => (),
+            };
+            invoker();
+          },
+          AccountRegistrationDelegationToStakePoolAndDRep() => () {
+            final credential = cert.stakeCredential;
+            final void Function() invoker = switch (credential) {
+              CredentialKeyPath() => () => witnessPaths.add(credential.path),
+              _ => () => (),
+            };
+            invoker();
+          },
         };
         invoker();
       }

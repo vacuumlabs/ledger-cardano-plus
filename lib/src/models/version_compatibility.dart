@@ -37,6 +37,7 @@ sealed class VersionCompatibility with _$VersionCompatibility {
     required bool supportsConway,
     required bool supportsMessageSigning,
     required bool supportsUnrestrictedTransaction,
+    required bool supportsCombinedCerts,
   }) = _VersionCompatibility;
   const VersionCompatibility._();
 
@@ -71,6 +72,7 @@ sealed class VersionCompatibility with _$VersionCompatibility {
       supportsConway: isVersionInRange(7, 0),
       supportsMessageSigning: isVersionInRange(7, 1),
       supportsUnrestrictedTransaction: major >= 8 && !isAppXS,
+      supportsCombinedCerts: major >= 8,
     );
   }
 
@@ -155,6 +157,21 @@ sealed class VersionCompatibility with _$VersionCompatibility {
         message: "Pool retirement",
         wantedVersion: ">=2.4.0",
         era: "Mary",
+      );
+    }
+
+    final hasCombinedCerts = request.tx.certificates?.any((c) => switch (c) {
+      StakePoolAndDRepDelegation() ||
+      AccountRegistrationDelegationToStakePool() ||
+      AccountRegistrationDelegationToDRep() ||
+      AccountRegistrationDelegationToStakePoolAndDRep() => true,
+      _ => false,
+    }) ?? false;
+    if (hasCombinedCerts && !compatibility.supportsCombinedCerts) {
+      throw LedgerCardanoVersionNotSupported(
+        message: "Combined delegation certificates",
+        wantedVersion: ">=8.0.0",
+        era: "Conway",
       );
     }
 
