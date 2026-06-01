@@ -6,14 +6,10 @@ part "ledger_signing_path.freezed.dart";
 sealed class LedgerSigningPath with _$LedgerSigningPath {
   LedgerSigningPath._();
 
-  // TODO: is there another stake pool key path?
-  // [
-  //   harden + 1853,
-  //   harden + 1815,
-  //   harden + 0,
-  //   harden + 0,
-  // ]
-  // above was observer in conway voting tests
+  factory LedgerSigningPath.poolCold({
+    required int account,
+    required int index,
+  }) = LedgerSigningPath_PoolCold;
   factory LedgerSigningPath.byron({
     required int account,
     required int address,
@@ -51,6 +47,12 @@ sealed class LedgerSigningPath with _$LedgerSigningPath {
       harden + account,
       0,
       address,
+    ],
+    LedgerSigningPath_PoolCold(account: final account, index: final index) => [
+      harden + 1853,
+      harden + 1815,
+      harden + account,
+      harden + index,
     ],
     LedgerSigningPath_Custom(path: final path) => path,
   };

@@ -10,6 +10,7 @@ import 'cases/sign_tx_conway_voting_procedures.dart';
 import 'cases/sign_tx_conway_with_certs.dart';
 import 'cases/sign_tx_mary.dart';
 import 'cases/sign_tx_multi_delegation.dart';
+import 'cases/sign_tx_unrestricted.dart';
 import 'cases/sitn_tx_alonzo_trezor_comparison.dart';
 import 'sign_tx_test_cases.dart';
 import 'test_utils.dart';
@@ -123,6 +124,12 @@ void main() async {
 
     testsBabbageTrezorComparison.testGroup(
       groupName: 'signTxBabbageTrezorComparison',
+      appVersion: appVersion,
+      cardanoApp: cardanoApp,
+    );
+
+    testsUnrestricted.testGroup(
+      groupName: 'signTxUnrestricted',
       appVersion: appVersion,
       cardanoApp: cardanoApp,
     );

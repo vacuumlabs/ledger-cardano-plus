@@ -14,22 +14,22 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ParsedSimpleNativeScript {
 
- int get nativeScriptSerializationValue; int get pubkeyType;
+ int get nativeScriptSerializationValue; int get pubkeyType; int get pubkeyTypeV8;
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ParsedSimpleNativeScript&&(identical(other.nativeScriptSerializationValue, nativeScriptSerializationValue) || other.nativeScriptSerializationValue == nativeScriptSerializationValue)&&(identical(other.pubkeyType, pubkeyType) || other.pubkeyType == pubkeyType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ParsedSimpleNativeScript&&(identical(other.nativeScriptSerializationValue, nativeScriptSerializationValue) || other.nativeScriptSerializationValue == nativeScriptSerializationValue)&&(identical(other.pubkeyType, pubkeyType) || other.pubkeyType == pubkeyType)&&(identical(other.pubkeyTypeV8, pubkeyTypeV8) || other.pubkeyTypeV8 == pubkeyTypeV8));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,nativeScriptSerializationValue,pubkeyType);
+int get hashCode => Object.hash(runtimeType,nativeScriptSerializationValue,pubkeyType,pubkeyTypeV8);
 
 @override
 String toString() {
-  return 'ParsedSimpleNativeScript(nativeScriptSerializationValue: $nativeScriptSerializationValue, pubkeyType: $pubkeyType)';
+  return 'ParsedSimpleNativeScript(nativeScriptSerializationValue: $nativeScriptSerializationValue, pubkeyType: $pubkeyType, pubkeyTypeV8: $pubkeyTypeV8)';
 }
 
 
