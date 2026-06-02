@@ -7,6 +7,8 @@ import 'package:ledger_flutter_plus/ledger_flutter_plus.dart';
 import 'sign_operational_certificate_test_cases.dart';
 import 'test_utils.dart';
 
+
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -31,7 +33,7 @@ void main() {
           } else {
             markTestSkipped('Skipping test as isAppXS is not true');
           }
-        });
+        }, timeout: testTimeout);
       }
     });
 
@@ -47,7 +49,7 @@ void main() {
           } else {
             markTestSkipped('Skipping test as isAppXS is not false');
           }
-        });
+        }, timeout: testTimeout);
       }
     });
   });

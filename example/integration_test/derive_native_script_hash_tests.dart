@@ -33,7 +33,8 @@ void main() {
               throwsA(isA<LedgerException>()),
             );
           }
-        });
+        }, timeout: testTimeout);
+
       }
     });
 
@@ -51,7 +52,8 @@ void main() {
               equals(testCase.expectedHash),
             );
           }
-        });
+        }, timeout: testTimeout);
+
       }
     });
 
@@ -78,7 +80,7 @@ void main() {
             ),
             throwsA(isA<InvalidNativeScriptException>()),
           );
-        });
+        }, timeout: testTimeout);
       }
     });
   });

@@ -5,6 +5,8 @@ import 'package:ledger_flutter_plus/ledger_flutter_plus.dart';
 
 import 'test_utils.dart';
 
+
+
 Future<String> _fetchSerial(CardanoLedgerConnection cardanoApp) async {
   try {
     final serial = await cardanoApp.getSerialNumber();
@@ -30,7 +32,7 @@ void main() {
       final serialResponse = await _fetchSerial(cardanoApp);
       expectVespr(serialResponse.contains('Serial:'), isTrue);
       expectVespr(serialResponse.length, equals(14 + 'Device: ${cardanoApp.device.name}\nSerial: '.length));
-    });
+    }, timeout: testTimeout);
 
     test('Should correctly get the semantic version of device and check compatibility', () async {
       try {
@@ -76,10 +78,10 @@ void main() {
       } catch (e) {
         print('Error fetching version: $e');
       }
-    });
+    }, timeout: testTimeout);
 
     test('Complete test', () async {
       print("Tests run");
-    });
+    }, timeout: testTimeout);
   });
 }

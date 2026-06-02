@@ -9,6 +9,8 @@ import 'byron_address_test_cases.dart';
 import 'shelley_address_test_cases.dart';
 import 'test_utils.dart';
 
+
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -33,7 +35,7 @@ void main() {
           } else {
             markTestSkipped('Skipping test as isAppXS is not true');
           }
-        });
+        }, timeout: testTimeout);
       }
     });
 
@@ -46,7 +48,7 @@ void main() {
           } else {
             markTestSkipped("Skipping test as isAppXS is not false");
           }
-        });
+        }, timeout: testTimeout);
       }
     });
 
@@ -59,7 +61,7 @@ void main() {
           } else {
             markTestSkipped('Skipping test as isAppXS is not true');
           }
-        });
+        }, timeout: testTimeout);
       }
     });
 
@@ -80,7 +82,7 @@ void main() {
           } else {
             markTestSkipped('Skipping test as isAppXS is not false');
           }
-        });
+        }, timeout: testTimeout);
       }
     });
 
@@ -109,6 +111,7 @@ void main() {
               markTestSkipped('Skipping test as isAppXS is not true');
             }
           },
+          timeout: testTimeout,
         );
       }
     });
@@ -158,6 +161,7 @@ void main() {
               markTestSkipped('Skipping test as isAppXS is not false');
             }
           },
+          timeout: testTimeout,
         );
       }
     });
@@ -185,6 +189,7 @@ void main() {
               markTestSkipped('Skipping test as isAppXS is not true');
             }
           },
+          timeout: testTimeout,
         );
       }
     });
@@ -220,6 +225,7 @@ void main() {
               markTestSkipped('Skipping test as isAppXS is not false');
             }
           },
+          timeout: testTimeout,
         );
       }
     });
@@ -264,6 +270,7 @@ void main() {
               equals(testCase.expectedResult),
             );
           },
+          timeout: testTimeout,
         );
       }
     });
