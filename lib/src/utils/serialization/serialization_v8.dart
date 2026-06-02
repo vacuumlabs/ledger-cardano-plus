@@ -360,4 +360,26 @@ class SerializationV8 {
       return writer.toBytes();
     });
   }
+
+  // v8 uses FLAG_INCLUDED_NO=1 / FLAG_INCLUDED_YES=2 for hashPayload and isAscii flags
+  static Uint8List serializeV8MessageDataInit({
+    required CardanoVersion version,
+    required ParsedMessageData msgData,
+    required CardanoNetwork network,
+  }) {
+    return useBinaryWriter((ByteDataWriter writer) {
+      final msgBytes = hex.decode(msgData.messageHex);
+      final addressBuffer = switch (msgData) {
+        ParsedMessageDataAddress() => SerializationUtils.serializeAddressParams(msgData.address, version, network),
+        ParsedMessageDataKeyHash() => Uint8List(0),
+      };
+      writer.write(SerializationUtils.serializeUint32(msgBytes.length));
+      writer.write(SerializationUtils.serializePath(msgData.signingPath));
+      SerializationUtils.serializeOptionFlag(writer, msgData.hashPayload);
+      SerializationUtils.serializeOptionFlag(writer, msgData.isAscii);
+      writer.writeUint8(msgData.serializedDataFieldType);
+      writer.write(addressBuffer);
+      return writer.toBytes();
+    });
+  }
 }

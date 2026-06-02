@@ -680,4 +680,34 @@ class SerializationV7 {
       return writer.toBytes();
     });
   }
+
+  // v7 used raw 0/1 for hashPayload and isAscii flags
+  static Uint8List serializeV7MessageDataInit({
+    required CardanoVersion version,
+    required ParsedMessageData msgData,
+    required CardanoNetwork network,
+  }) {
+    return useBinaryWriter((ByteDataWriter writer) {
+        // Message length
+        final msgBytes = hex.decode(msgData.messageHex);
+        final msgLengthBuffer = SerializationUtils.serializeUint32(msgBytes.length);
+        final hashPayloadUint8 = msgData.hashPayload ? 1 : 0;
+        final isAsciiUint8 = msgData.isAscii ? 1 : 0;
+        final serializedDataFieldTypeUint8 = msgData.serializedDataFieldType;
+
+        final addressBuffer = switch (msgData) {
+          ParsedMessageDataAddress() => SerializationUtils.serializeAddressParams(msgData.address, version, network),
+          ParsedMessageDataKeyHash() => Uint8List(0),
+        };
+
+        writer.write(msgLengthBuffer);
+        writer.write(SerializationUtils.serializePath(msgData.signingPath));
+        writer.writeUint8(hashPayloadUint8);
+        writer.writeUint8(isAsciiUint8);
+        writer.writeUint8(serializedDataFieldTypeUint8);
+        writer.write(addressBuffer);
+
+        return writer.toBytes();
+      });
+  }
 }
