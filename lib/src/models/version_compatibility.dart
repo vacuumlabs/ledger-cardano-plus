@@ -71,8 +71,8 @@ sealed class VersionCompatibility with _$VersionCompatibility {
       supportsCIP36Vote: isVersionInRange(6, 0),
       supportsConway: isVersionInRange(7, 0),
       supportsMessageSigning: isVersionInRange(7, 1),
-      supportsUnrestrictedTransaction: major >= 8 && !isAppXS,
-      supportsCombinedCerts: major >= 8,
+      supportsUnrestrictedTransaction: isVersionInRange(8, 0) && !isAppXS,
+      supportsCombinedCerts: isVersionInRange(8, 0),
     );
   }
 
