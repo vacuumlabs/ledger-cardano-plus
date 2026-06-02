@@ -38,18 +38,17 @@ void main() {
         final compatibility = VersionCompatibility.checkVersionCompatibility(version);
 
         print(
-          'Device: ${cardanoApp.device.name}\nApp Version: ${version.versionMajor}.${version.versionMinor}.${version.versionPatch}\nDevelopment Version: ${version.testMode ? "Yes" : "No"}',
+          'Device: ${cardanoApp.device.name}\n'
+          'App Version: ${version.versionMajor}.${version.versionMinor}.${version.versionPatch}\n'
+          'Development Version: ${version.testMode ? "Yes" : "No"}',
         );
 
-        // Check major and minor version
-        expectVespr(version.versionMajor, equals(7));
-        expectVespr(version.versionMinor, equals(2));
-        expectVespr(version.versionPatch, equals(1));
+        expectVespr(version.versionMajor, anyOf(equals(7), equals(8)));
 
         // Check debug flag
         expectVespr(version.testMode, isFalse);
 
-        // Check compatibility details
+        // Flags present in both v7 and v8
         expectVespr(compatibility.isCompatible, isTrue);
         expectVespr(compatibility.recommendedVersion, equals(">=7.2.1"));
         expectVespr(compatibility.supportsByronAddressDerivation, equals(!version.flags.isAppXS));
@@ -68,6 +67,12 @@ void main() {
         expectVespr(compatibility.supportsBabbage, isTrue);
         expectVespr(compatibility.supportsCIP36Vote, isTrue);
         expectVespr(compatibility.supportsConway, isTrue);
+        expectVespr(compatibility.supportsMessageSigning, isTrue);
+
+        // v8-only flags
+        final isV8 = version.versionMajor >= 8;
+        expectVespr(compatibility.supportsCombinedCerts, equals(isV8));
+        expectVespr(compatibility.supportsUnrestrictedTransaction, equals(isV8 && !version.flags.isAppXS));
       } catch (e) {
         print('Error fetching version: $e');
       }
