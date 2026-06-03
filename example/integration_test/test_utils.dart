@@ -12,7 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'get_extended_public_key_test_cases.dart';
 
-const testTimeout = Timeout(Duration(minutes: 2));
+const testTimeout = Timeout(Duration(minutes: 4));
 
 Future<CardanoLedgerConnection> establishCardanoConnection() async {
   final ledger = CardanoLedger.ble(

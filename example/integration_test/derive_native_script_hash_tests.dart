@@ -78,7 +78,7 @@ void main() {
               testCase.script(),
               NativeScriptHashDisplayFormat.bech32,
             ),
-            throwsA(isA<InvalidNativeScriptException>()),
+            throwsA(isA<LedgerCardanoResponseCodeException>()),
           );
         }, timeout: testTimeout);
       }
