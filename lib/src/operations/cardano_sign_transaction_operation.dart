@@ -22,7 +22,6 @@ class CardanoSignTransactionOperation extends LedgerComplexOperation<SignedTrans
 
   @override
   Future<SignedTransactionData> invoke(LedgerSendFct send) async {
-    VersionCompatibility.checkVersionCompatibility(cardanoVersion);
     VersionCompatibility.ensureRequestSupportedByAppVersion(cardanoVersion, signingRequest);
 
     if (cardanoVersion.versionMajor >= 8) return _invokeV8(send);
