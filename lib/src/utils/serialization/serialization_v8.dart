@@ -322,7 +322,7 @@ class SerializationV8 {
   }
 
   static void _writeV8CVoteKey(ByteDataWriter writer, CVotePublicKey? key, LedgerSigningPath? path) {
-    if(key != null || path != null){
+    if(key == null && path == null){
       throw LedgerCardanoValidationException("votePublicKey and votePublicKeyPath cannot both be null");
     }
     if (key != null) {
