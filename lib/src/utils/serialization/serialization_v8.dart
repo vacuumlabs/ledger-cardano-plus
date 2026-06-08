@@ -325,6 +325,9 @@ class SerializationV8 {
     if(key == null && path == null){
       throw LedgerCardanoValidationException("votePublicKey and votePublicKeyPath cannot both be null");
     }
+    if(key != null && path!= null){
+      throw LedgerCardanoValidationException("Only one of votePublicKey or votePublicKeyPath should be provided");  
+    }
     if (key != null) {
       writer.writeUint8(0); // CVOTE_CREDENTIAL_KEY
       SerializationUtils.writeSerializedHex(writer, key.value);
