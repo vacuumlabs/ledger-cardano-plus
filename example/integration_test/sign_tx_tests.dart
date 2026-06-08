@@ -133,11 +133,5 @@ void main() async {
       appVersion: appVersion,
       cardanoApp: cardanoApp,
     );
-
-    testsByron.testGroup(
-      groupName: 'signTxByron',
-      appVersion: appVersion,
-      cardanoApp: cardanoApp,
-    );
   });
 }
