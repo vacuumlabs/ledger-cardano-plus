@@ -75,8 +75,8 @@ void main() {
         final isV8 = version.versionMajor >= 8;
         expectVespr(compatibility.supportsCombinedCerts, equals(isV8));
         expectVespr(compatibility.supportsUnrestrictedTransaction, equals(isV8 && !version.flags.isAppXS));
-      } catch (e) {
-        print('Error fetching version: $e');
+      } catch (e, st) {
+        fail('Error fetching version: $e\n$st');
       }
     }, timeout: testTimeout);
 
