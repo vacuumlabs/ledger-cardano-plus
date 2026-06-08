@@ -120,12 +120,12 @@ class CardanoDeriveNativeScriptHashOperation extends LedgerComplexOperation<Stri
     final void Function() invoker = switch (script) {
       ParsedSimpleNativeScript_PubKeyDeviceOwned() => () {
         writer.writeUint8(script.nativeScriptSerializationValue);
-        writer.writeUint8(isV8 ? script.pubkeyTypeV8 : script.pubkeyType);
+        writer.writeUint8(isV8 ? script.pubkeyTypeV8 : script.pubkeyTypeV7);
         writer.write(SerializationUtils.serializePath(script.path));
       },
       ParsedSimpleNativeScript_PubKeyThirdParty() => () {
         writer.writeUint8(script.nativeScriptSerializationValue);
-        writer.writeUint8(isV8 ? script.pubkeyTypeV8 : script.pubkeyType);
+        writer.writeUint8(isV8 ? script.pubkeyTypeV8 : script.pubkeyTypeV7);
         SerializationUtils.writeSerializedHex(writer, script.keyHashHex);
       },
       ParsedSimpleNativeScript_InvalidBefore() => () {
