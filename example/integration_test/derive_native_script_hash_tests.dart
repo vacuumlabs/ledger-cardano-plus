@@ -19,6 +19,10 @@ void main() {
       isAppXS = (await cardanoApp.getVersion()).flags.isAppXS;
     });
 
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     group('Valid native scripts - isAppXs true', () {
       for (final testCase in validNativeScriptTestCases) {
         test(testCase.testName, () async {

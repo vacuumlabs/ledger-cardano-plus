@@ -44,6 +44,10 @@ void main() async {
   print('Connected to device: ${cardanoApp.device.name}');
 
   group('signTx', () {
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     testsConwayVotingProcedures.testGroup(
       groupName: 'signTxConwayVotingProcedures',
       appVersion: appVersion,

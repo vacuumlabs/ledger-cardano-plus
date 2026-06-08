@@ -22,6 +22,10 @@ void main() {
       isAppXS = (await cardanoApp.getVersion()).flags.isAppXS;
     });
 
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     group('Should successfully sign operational certificate - isAppXS true', () {
       for (final testCase in signOperationalCertificateTests) {
         test(testCase.testName, () async {

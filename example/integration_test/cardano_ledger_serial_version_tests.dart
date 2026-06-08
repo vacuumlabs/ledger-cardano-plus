@@ -28,6 +28,10 @@ void main() {
       print('Connected to device: ${cardanoApp.device.name}');
     });
 
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     testWidgets('Should correctly get the serial number of the device', (WidgetTester tester) async {
       final serialResponse = await _fetchSerial(cardanoApp);
       expectVespr(serialResponse.contains('Serial:'), isTrue);

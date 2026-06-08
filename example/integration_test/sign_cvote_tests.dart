@@ -20,6 +20,10 @@ void main() {
       appVersion = await cardanoApp.getVersion();
     });
 
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     group('signCatalystRegistration', () {
       for (final testCase in testsCatalystRegistration) {
         test(testCase.testName, () async {

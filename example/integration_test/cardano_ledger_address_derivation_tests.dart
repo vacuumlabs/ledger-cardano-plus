@@ -24,6 +24,10 @@ void main() {
       isAppXS = (await cardanoApp.getVersion()).flags.isAppXS;
     });
 
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     group('Should successfully derive Byron address - isAppXS true', () {
       for (var testCase in byronTestCases) {
         test(testCase.testName, () async {

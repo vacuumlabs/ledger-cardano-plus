@@ -18,6 +18,10 @@ void main() {
       print('Connected to device: ${cardanoApp.device.name}');
     });
 
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     group('Should successfully get a single extended public key', () {
       test('get a single extended public key --- byron', () async {
         await testSingleKey(testsByron, cardanoApp);

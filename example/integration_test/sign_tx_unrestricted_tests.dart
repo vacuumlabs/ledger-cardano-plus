@@ -17,6 +17,10 @@ void main() async {
   print('Connected to device: ${cardanoApp.device.name}');
 
   group('signTxUnrestricted', () {
+    tearDownAll(() async {
+      await cardanoApp.disconnect();
+    });
+
     for (final testCase in testsUnrestricted) {
       versionConstrainedTest(
         testCase.testName,
