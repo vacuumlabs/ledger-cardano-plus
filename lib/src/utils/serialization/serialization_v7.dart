@@ -391,7 +391,6 @@ class SerializationV7 {
 
   static Uint8List serializeV7TxCertificatePreMultisig(ParsedCertificate certificate) {
     return useBinaryWriter((ByteDataWriter writer) {
-      writer.writeUint8(certificate.certificateTypeSerializationValue);
       final void Function() invoker = switch (certificate) {
         StakeRegistration() => () {
           final certStakeCredential = certificate.stakeCredential;
