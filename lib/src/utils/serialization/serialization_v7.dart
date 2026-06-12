@@ -553,6 +553,38 @@ class SerializationV7 {
     });
   }
 
+  static Uint8List serializeV7PoolRelay(ParsedPoolRelay relay) {
+    return useBinaryWriter((ByteDataWriter writer) {
+      final void Function() invoker = switch (relay) {
+        SingleHostIpAddr() => () {
+          writer.writeUint8(relay.relayType.value);
+          SerializationUtils.serializeOptional(writer, relay.port, (w, value) => w.writeUint16(value));
+          SerializationUtils.serializeOptional(
+            writer,
+            relay.ipv4,
+            (w, value) => w.write(SerializationUtils.serializeIpv4(value)),
+          );
+          SerializationUtils.serializeOptional(
+            writer,
+            relay.ipv6,
+            (w, value) => w.write(SerializationUtils.serializeIpv6(value)),
+          );
+        },
+        SingleHostName() => () {
+          writer.writeUint8(relay.relayType.value);
+          SerializationUtils.serializeOptional(writer, relay.port, (w, value) => w.writeUint16(value));
+          writer.write(SerializationUtils.serializeDnsName(relay.dnsName));
+        },
+        MultiHost() => () {
+          writer.writeUint8(relay.relayType.value);
+          writer.write(SerializationUtils.serializeDnsName(relay.dnsName));
+        },
+      };
+      invoker();
+      return writer.toBytes();
+    });
+  }
+
   static Uint8List serializeV7TxValidityStart(BigInt validityIntervalStart) {
     return useBinaryWriter((ByteDataWriter writer) {
       writer.write(SerializationUtils.serializeUint64(validityIntervalStart));

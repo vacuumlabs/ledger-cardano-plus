@@ -6,7 +6,6 @@ import "package:ledger_flutter_plus/ledger_flutter_plus_dart.dart";
 
 import "../../ledger_cardano_plus.dart";
 import "../models/parsed_c_vote_delegation.dart";
-import "../models/parsed_pool_relay.dart";
 import "utilities.dart";
 
 part 'serialization/serialization_v7.dart';
@@ -267,29 +266,6 @@ class SerializationUtils {
       return writer.toBytes();
     },
   );
-
-  static Uint8List serializePoolRelay(ParsedPoolRelay relay) {
-    return useBinaryWriter((ByteDataWriter writer) {
-      final void Function() invoker = switch (relay) {
-        SingleHostIpAddr() => () {
-          writer.writeUint8(relay.relayType.value);
-          serializeOptional(writer, relay.port, (w, value) => w.writeUint16(value));
-          serializeOptional(writer, relay.ipv4, (w, value) => w.write(serializeIpv4(value)));
-        },
-        SingleHostName() => () {
-          writer.writeUint8(relay.relayType.value);
-          serializeOptional(writer, relay.port, (w, value) => w.writeUint16(value));
-          serializeOptional(writer, relay.dnsName, (w, value) => w.write(serializeDnsName(value)));
-        },
-        MultiHost() => () {
-          writer.writeUint8(relay.relayType.value);
-          serializeOptional(writer, relay.dnsName, (w, value) => w.write(serializeDnsName(value)));
-        },
-      };
-      invoker();
-      return writer.toBytes();
-    });
-  }
 
   static void serializeOptional<T>(
     ByteDataWriter writer,

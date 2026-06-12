@@ -267,11 +267,17 @@ class SerializationV8 {
       SerializationUtils.writeSerializedCoin(writer, pool.cost);
       writer.write(SerializationUtils.serializeUint64(pool.margin.numerator));
       writer.write(SerializationUtils.serializeUint64(pool.margin.denominator));
-      final rewardAccountCredential = switch (pool.rewardAccount) {
-        DeviceOwnedPoolRewardAccount(:final path) => ParsedCredential.keyPath(path: path),
-        ThirdPartyPoolRewardAccount(:final rewardAccountHex) => ParsedCredential.keyHash(keyHashHex: rewardAccountHex),
-      };
-      writer.write(serializeCredentialV8(rewardAccountCredential));
+      // the reward account is not a credential: the third-party variant carries
+      // a full 29-byte reward account (1-byte header + 28-byte hash), so it is
+      // serialized directly (tx_credential_types.h: ext_credential_type_t)
+      switch (pool.rewardAccount) {
+        case DeviceOwnedPoolRewardAccount(:final path):
+          writer.writeUint8(2); // EXT_CREDENTIAL_KEY_PATH
+          writer.write(SerializationUtils.serializePath(path));
+        case ThirdPartyPoolRewardAccount(:final rewardAccountHex):
+          writer.writeUint8(0); // EXT_CREDENTIAL_KEY_HASH
+          SerializationUtils.writeSerializedHex(writer, rewardAccountHex);
+      }
       writer.writeUint16(pool.owners.length);
       writer.writeUint16(pool.relays.length);
       SerializationUtils.serializeOptionFlag(writer, pool.metadata != null);
@@ -283,7 +289,7 @@ class SerializationV8 {
         writer.write(serializeCredentialV8(ownerCredential));
       }
       for (final relay in pool.relays) {
-        writer.write(SerializationUtils.serializePoolRelay(relay));
+        writer.write(_serializeV8PoolRelay(relay));
       }
       if (pool.metadata != null) {
         final meta = pool.metadata!;
@@ -291,6 +297,40 @@ class SerializationV8 {
         writer.writeUint16(urlBytes.length);
         writer.write(urlBytes);
         SerializationUtils.writeSerializedHex(writer, meta.hashHex);
+      }
+      return writer.toBytes();
+    });
+  }
+
+  static Uint8List _serializeV8PoolRelay(ParsedPoolRelay relay) {
+    return useBinaryWriter((writer) {
+      switch (relay) {
+        case SingleHostIpAddr():
+          writer.writeUint8(relay.relayType.value);
+          SerializationUtils.serializeOptional(writer, relay.port, (w, value) => w.writeUint16(value));
+          SerializationUtils.serializeOptional(
+            writer,
+            relay.ipv4,
+            (w, value) => w.write(SerializationUtils.serializeIpv4(value)),
+          );
+          SerializationUtils.serializeOptional(
+            writer,
+            relay.ipv6,
+            (w, value) => w.write(SerializationUtils.serializeIpv6(value)),
+          );
+        case SingleHostName():
+          writer.writeUint8(relay.relayType.value);
+          SerializationUtils.serializeOptional(writer, relay.port, (w, value) => w.writeUint16(value));
+          final dnsBytes = SerializationUtils.serializeDnsName(relay.dnsName);
+          SerializationUtils.serializeOptionFlag(writer, true);
+          writer.writeUint8(dnsBytes.length);
+          writer.write(dnsBytes);
+        case MultiHost():
+          writer.writeUint8(relay.relayType.value);
+          final dnsBytes = SerializationUtils.serializeDnsName(relay.dnsName);
+          SerializationUtils.serializeOptionFlag(writer, true);
+          writer.writeUint8(dnsBytes.length);
+          writer.write(dnsBytes);
       }
       return writer.toBytes();
     });
