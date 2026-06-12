@@ -3,15 +3,15 @@ sealed class LedgerCardanoResponseCodeException implements Exception {
     // ── v7 ───────────────────────────────────────────────────────────────────
     WrongAppOpenedException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     BadClaException() => 0x6E02,
-    UnknownInstructionException() => 0x6E03,
+    UnknownInstructionException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     StillInCallException() => 0x6E04,
-    InvalidRequestParametersException() => 0x6E05,
-    InvalidStateException() => 0x6E06,
+    InvalidRequestParametersException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
+    InvalidStateException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     InvalidDataException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
-    InvalidBip44PathException() => 0x6E08,
-    UserRejectedException() => 0x6E09,
-    PolicyRejectedException() => 0x6E10,
-    DeviceLockedException() => 0x6E11,
+    InvalidBip44PathException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
+    UserRejectedException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
+    PolicyRejectedException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
+    DeviceLockedException(ledgerStatusCode: final ledgerStatusCode) => ledgerStatusCode,
     // ── v8 ───────────────────────────────────────────────────────────────────
     InvalidAddressParamsException() => 0x6B06,
     InsufficientMemoryException() => 0x6A84,
@@ -46,21 +46,21 @@ sealed class LedgerCardanoResponseCodeException implements Exception {
     0x6E08 => InvalidBip44PathException(),
     0x6E09 => UserRejectedException(),
     0x6E10 => PolicyRejectedException(),
-    0x6E11 || 0x6B0C || 0x5515 => DeviceLockedException(),
+    0x6E11 || 0x6B0C || 0x5515 => DeviceLockedException(ledgerStatusCode: statusCode),
 
     // ── v8 standard SDK codes ─────────────────────────────────────────────────
-    0x6985 => UserRejectedException(),
-    0x6982 => PolicyRejectedException(),
-    0x6980 => InvalidStateException(),
-    0x6D00 => UnknownInstructionException(),
-    0x6A86 => InvalidRequestParametersException(),
+    0x6985 => UserRejectedException(ledgerStatusCode: 0x6985),
+    0x6982 => PolicyRejectedException(ledgerStatusCode: 0x6982),
+    0x6980 => InvalidStateException(ledgerStatusCode: 0x6980),
+    0x6D00 => UnknownInstructionException(ledgerStatusCode: 0x6D00),
+    0x6A86 => InvalidRequestParametersException(ledgerStatusCode: 0x6A86),
     0x6A87 => InvalidDataException(ledgerStatusCode: 0x6A87),
     0x6A84 => InsufficientMemoryException(),
 
     // ── v8 Cardano-specific codes — 0x6BXX ───────────────────────────────────
 
     // BIP44 / address
-    0x6B05 => InvalidBip44PathException(),
+    0x6B05 => InvalidBip44PathException(ledgerStatusCode: 0x6B05),
     0x6B06 => InvalidAddressParamsException(),
 
     // OpCert
@@ -148,7 +148,8 @@ class BadClaException extends LedgerCardanoResponseCodeException {
 }
 
 class UnknownInstructionException extends LedgerCardanoResponseCodeException {
-  UnknownInstructionException() : super(message: "Unknown instruction");
+  final int ledgerStatusCode;
+  UnknownInstructionException({this.ledgerStatusCode = 0x6E03}) : super(message: "Unknown instruction");
 }
 
 class StillInCallException extends LedgerCardanoResponseCodeException {
@@ -156,11 +157,13 @@ class StillInCallException extends LedgerCardanoResponseCodeException {
 }
 
 class InvalidRequestParametersException extends LedgerCardanoResponseCodeException {
-  InvalidRequestParametersException() : super(message: "Invalid request parameters");
+  final int ledgerStatusCode;
+  InvalidRequestParametersException({this.ledgerStatusCode = 0x6E05}) : super(message: "Invalid request parameters");
 }
 
 class InvalidStateException extends LedgerCardanoResponseCodeException {
-  InvalidStateException() : super(message: "Invalid state");
+  final int ledgerStatusCode;
+  InvalidStateException({this.ledgerStatusCode = 0x6E06}) : super(message: "Invalid state");
 }
 
 class InvalidDataException extends LedgerCardanoResponseCodeException {
@@ -169,19 +172,23 @@ class InvalidDataException extends LedgerCardanoResponseCodeException {
 }
 
 class InvalidBip44PathException extends LedgerCardanoResponseCodeException {
-  InvalidBip44PathException() : super(message: "Invalid BIP44 path");
+  final int ledgerStatusCode;
+  InvalidBip44PathException({this.ledgerStatusCode = 0x6E08}) : super(message: "Invalid BIP44 path");
 }
 
 class UserRejectedException extends LedgerCardanoResponseCodeException {
-  UserRejectedException() : super(message: "Rejected by user");
+  final int ledgerStatusCode;
+  UserRejectedException({this.ledgerStatusCode = 0x6E09}) : super(message: "Rejected by user");
 }
 
 class PolicyRejectedException extends LedgerCardanoResponseCodeException {
-  PolicyRejectedException() : super(message: "Rejected by policy");
+  final int ledgerStatusCode;
+  PolicyRejectedException({this.ledgerStatusCode = 0x6E10}) : super(message: "Rejected by policy");
 }
 
 class DeviceLockedException extends LedgerCardanoResponseCodeException {
-  DeviceLockedException() : super(message: "Device is locked");
+  final int ledgerStatusCode;
+  DeviceLockedException({this.ledgerStatusCode = 0x6E11}) : super(message: "Device is locked");
 }
 
 // ── v8 exception classes ──────────────────────────────────────────────────────
