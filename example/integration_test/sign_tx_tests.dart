@@ -11,6 +11,7 @@ import 'cases/sign_tx_conway_with_certs.dart';
 import 'cases/sign_tx_mary.dart';
 import 'cases/sign_tx_multi_delegation.dart';
 import 'cases/sign_tx_combined_certs.dart';
+import 'cases/sign_tx_pool_registration.dart';
 import 'cases/sitn_tx_alonzo_trezor_comparison.dart';
 import 'sign_tx_test_cases.dart';
 import 'test_utils.dart';
@@ -134,6 +135,12 @@ void main() async {
 
     testsConwayCombinedCerts.testGroup(
       groupName: 'signTxConwayCombinedCerts',
+      appVersion: appVersion,
+      cardanoApp: cardanoApp,
+    );
+
+    testsPoolRegistration.testGroup(
+      groupName: 'signTxPoolRegistration',
       appVersion: appVersion,
       cardanoApp: cardanoApp,
     );
